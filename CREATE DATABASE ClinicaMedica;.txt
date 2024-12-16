@@ -1,0 +1,51 @@
+CREATE DATABASE ClinicaMedica;
+
+USE ClinicaMedica;
+
+CREATE TABLE Medico (
+    id_medico INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    crm VARCHAR(20) UNIQUE NOT NULL,
+    telefone VARCHAR(15),
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE Especialidade (
+    id_especialidade INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE Medico_Especialidade (
+    id_medico INT,
+    id_especialidade INT,
+    PRIMARY KEY (id_medico, id_especialidade),
+    FOREIGN KEY (id_medico) REFERENCES Medico(id_medico) ON DELETE CASCADE,
+    FOREIGN KEY (id_especialidade) REFERENCES Especialidade(id_especialidade) ON DELETE CASCADE
+);
+
+CREATE TABLE Paciente (
+    id_paciente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(11) UNIQUE NOT NULL,
+    telefone VARCHAR(15),
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE Consulta (
+    id_consulta INT AUTO_INCREMENT PRIMARY KEY,
+    id_medico INT NOT NULL,
+    id_paciente INT NOT NULL,
+    data_hora DATETIME NOT NULL,
+    comparecimento BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_medico) REFERENCES Medico(id_medico) ON DELETE CASCADE,
+    FOREIGN KEY (id_paciente) REFERENCES Paciente(id_paciente) ON DELETE CASCADE
+);
+
+CREATE TABLE Diagnostico (
+    id_diagnostico INT AUTO_INCREMENT PRIMARY KEY,
+    id_consulta INT NOT NULL,
+    descricao TEXT NOT NULL,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_consulta) REFERENCES Consulta(id_consulta) ON DELETE CASCADE
+);

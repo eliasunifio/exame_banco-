@@ -1,0 +1,36 @@
+
+SELECT e.descricao AS Especialidade, m.nome AS Medico
+FROM Medico m
+JOIN Medico_Especialidade me ON m.id_medico = me.id_medico
+JOIN Especialidade e ON me.id_especialidade = e.id_especialidade
+ORDER BY e.descricao, m.nome;
+
+CREATE VIEW Pacientes_Faltaram AS
+SELECT p.nome AS Paciente, c.data_hora AS DataHora
+FROM Consulta c
+JOIN Paciente p ON c.id_paciente = p.id_paciente
+WHERE c.comparecimento = FALSE 
+  AND c.data_hora BETWEEN '2024-06-01 00:00:00' AND '2024-06-10 23:59:59';
+
+SELECT m.nome AS Medico, e.descricao AS Especialidade, COUNT(c.id_consulta) AS Quantidade_Atendida
+FROM Consulta c
+JOIN Medico m ON c.id_medico = m.id_medico
+JOIN Medico_Especialidade me ON m.id_medico = me.id_medico
+JOIN Especialidade e ON me.id_especialidade = e.id_especialidade
+WHERE c.comparecimento = TRUE 
+  AND c.data_hora BETWEEN '2024-06-05 00:00:00' AND '2024-06-10 23:59:59'
+GROUP BY m.nome, e.descricao;
+
+SELECT m.nome AS Medico
+FROM Medico m
+WHERE m.id_medico NOT IN (
+    SELECT DISTINCT c.id_medico
+    FROM Consulta c
+    WHERE DATE(c.data_hora) = '2025-01-03'
+);
+
+SELECT m.nome AS Medico, p.nome AS Paciente, c.data_hora AS DataHora, c.comparecimento AS Comparecimento
+FROM Consulta c
+JOIN Medico m ON c.id_medico = m.id_medico
+JOIN Paciente p ON c.id_paciente = p.id_paciente
+ORDER BY m.nome;
